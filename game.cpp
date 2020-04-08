@@ -17,58 +17,60 @@ Play::~Play(){
 }
 
 bool Play::tick(){
-  SDL_Event evv;
-  if (SDL_WaitEventTimeout(&evv, 225))
-  {
-    switch (evv.type)
-    {
-    case SDL_KEYDOWN:
-      {
-        switch (evv.key.keysym.sym)
-        {
-        case SDLK_s:
-          {
-            Action t = tetromino_;
-            t.move(0, 1);
-            if (!well_.check(t))
-              tetromino_ = t;
-          }
-          break;
-        case SDLK_d:
-          {
-            Action t = tetromino_;
-            t.move(1, 0);
-            if (!well_.check(t))
-              tetromino_ = t;
-          }
-          break;
-        case SDLK_a:
-          {
-            Action t = tetromino_;
-            t.move(-1, 0);
-            if (!well_.check(t))
-              tetromino_ = t;
-          }
-          break;
-        case SDLK_SPACE:
-          {
-            Action t = tetromino_;
-            t.rotate();
-            if (!well_.check(t))
-              tetromino_ = t;
-          }
-          break;
-        }
-      }
-      break;
-    case SDL_QUIT:
-      return false;
-    }
-  }
+  bool quit = 0;
+  SDL_Event e;
+            while(!quit)
+            {
+                while( SDL_PollEvent( &e ) != 0 )
+                {
+                    if( e.type == SDL_QUIT )
+                    {
+                        quit = 1;
+                    }
+                    else if( e.type == SDL_KEYDOWN )
+                    {
+                        switch( e.key.keysym.sym )
+                        {
+                            case SDLK_s:
+                            {
+                                Action t = tetromino_;
+                                t.move(0, 1);
+                                if (!well_.check(t))
+                                  tetromino_ = t;
+                            }
+                            break;
+                            case SDLK_d:
+                              {
+                                Action t = tetromino_;
+                                t.move(1, 0);
+                                if (!well_.check(t))
+                                  tetromino_ = t;
+                              }
+                              break;
+                            case SDLK_a:
+                              {
+                                Action t = tetromino_;
+                                t.move(-1, 0);
+                                if (!well_.check(t))
+                                  tetromino_ = t;
+                              }
+                              break;
+                            case SDLK_SPACE:
+                              {
+                                Action t = tetromino_;
+                                t.rotate();
+                                if (!well_.check(t))
+                                  tetromino_ = t;
+                              }
+                              break;
+                        }
+                    }
+                }
   SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 0x4f);
   SDL_RenderClear(renderer_);
   well_.draw(renderer_);
   tetromino_.draw(renderer_);
   SDL_RenderPresent(renderer_);
   return true;
+            }
 };
